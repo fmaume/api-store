@@ -149,7 +149,8 @@ const logToQuora = async (tab, url, cookieMs, cookieMb) => {
 	const tab = await nick.newTab()
 	let isUrl = /^((http[s]?|ftp):\/)?\/?([^:/\s]+)((\/\w+)*\/)([\w\-.]+[^#?\s]+)(.*)?(#[\w-]+)?$/g.test(argv.topic)
 	let topic = ""
-
+	
+	//go to the topic page
 	if (isUrl) {
 		let tmp = argv.topic.split("/")
 		topic = tmp.pop()
@@ -170,11 +171,15 @@ const logToQuora = async (tab, url, cookieMs, cookieMb) => {
 			nick.exit(1)
 		}
 	}
+	
+	//ectract writer
 	await tab.inject("http://code.jquery.com/jquery-3.2.1.min.js")
 
 	const urls = await tab.evaluate(getWritersOfTopics, null)
+	//ectract writer
 	utils.log("Bot found some urls to scrap", "info")
 	utils.log(`Now scrapping data for topic ${topic}...`, "loading")
+	//extract date from writer profil
 	const profiles = await loopThroughtProfiles(tab, urls)
 	await utils.saveResult(profiles, "Quora influencers")
 })()
